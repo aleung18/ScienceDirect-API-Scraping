@@ -5,8 +5,7 @@ import csv
 import os
 
 # num_articles should be factor of 100
-# make sure that folder is already created
-def generate_list_of_documents(keyword, num_articles, foldername):
+def generate_list_of_documents(keyword, num_articles):
 
     # Variables for the search query (request URL)
     offset = 0
@@ -20,8 +19,8 @@ def generate_list_of_documents(keyword, num_articles, foldername):
 
         headers = {
             "Accept": "application/xml", 
-            "X-ELS-APIKey": "{Your API Key}", 
-            "X-ELS-Insttoken": "{Your Institutional Token}",
+            "X-ELS-APIKey": "69691fd2a98b018877fe90d4d922b315", 
+            "X-ELS-Insttoken": "7b239acf049df2b930f8fe8fc331d0d2",
             'Cookie': '__cf_bm=68HlFrvAa8VWZickduad8eTYRKyqZLqKI.0UNLEEr4Q-1696542666-0-AYrM1Pzt1jwXzBkZTD7BeiJKSLRYOKAyWZtt6KTg+rCCKgr6CpLrCkje+JyY81qXnxnSWo4tS/Lc/mbWYlfeINE='
         }
 
@@ -59,15 +58,18 @@ def generate_list_of_documents(keyword, num_articles, foldername):
         article_background_list.append(jsonObject['full-text-retrieval-response']['coredata']['dc:description'])
         article_title_list.append(jsonObject['full-text-retrieval-response']['coredata']['dc:title'])
 
+    # creating folder
+    directory = f"{keyword} articles"
+    path = os.path.join(os.getcwd(), directory)
+    os.mkdir(path)
+
+
     # writing description/abstract into text file
     for index, (background, title) in enumerate(zip(article_background_list, article_title_list)):
-        with open(f'{foldername}/{index}.txt', 'w') as f:
+        with open(f'{directory}/{index}.txt', 'w') as f:
             f.write(f"Topic: {keyword.title()}\n\n")
             f.write(f"Title: {title}\n\n")
             f.write(f"Abstract: {background}")
         print(f"File saved as: {index}.txt")
 
-    os.system('clear')
-    return f"Articles saved to folder {foldername}"
-
-print(generate_list_of_documents("gas chromatography", 500, "gas chromatography articles"))
+    return f"Articles saved to folder {directory}"
